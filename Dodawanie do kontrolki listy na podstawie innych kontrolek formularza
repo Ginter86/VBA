@@ -36,14 +36,10 @@
     
     ' Przejdź przez elementy w ListBoxie i zapisz do arkusza
     For il = 0 To Me.ListaScrap.ListCount - 1
-        ws.Cells(i + il + 1, 1).Value = k
+        ws.Cells(i + il + 1, 1).Value = i 
         ws.Cells(i + il + 1, 2).Value = Now()
         ws.Cells(i + il + 1, 3).Value = Material
-        ws.Cells(i + il + 1, 4).Value = CBZmiana
-        ws.Cells(i + il + 1, 5).Value = CbMaszyna
-        ws.Cells(i + il + 1, 6).Value = Split(Me.ListaScrap.List(il), vbTab)(0) ' Ilośćsztuk
-        ws.Cells(i + il + 1, 7).Value = Split(Me.ListaScrap.List(il), vbTab)(1) ' Kodwady
-        ws.Cells(i + il + 1, 8).Value = Split(Me.ListaScrap.List(il), vbTab)(0) * Wartosc
+
     Next il
 
     ' Wyczyść ListBox po zapisaniu danych
