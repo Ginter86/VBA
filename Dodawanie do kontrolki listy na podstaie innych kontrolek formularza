@@ -1,0 +1,14 @@
+    ' Pobierz wartości z TextBoxów (lub innych kontrolek) na formularzu
+    Dim iloscSztuk As String
+    Dim kodWady As String
+    
+      iloscSztuk = Me.TbIloscScrap.Value
+      kodWady = Me.TbkodWady.Value
+  
+      ' Dodaj nowy wiersz do ListBoxa
+      Me.ListaScrap.AddItem iloscSztuk & vbTab & kodWady
+  
+      ' Wyczyść TextBoxy po dodaniu do ListBoxa
+      Me.TbIloscScrap.Value = ""
+      CbKodWady.Value = ""
+    End If
