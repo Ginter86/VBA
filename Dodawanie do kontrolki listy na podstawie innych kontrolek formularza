@@ -11,4 +11,4 @@
       ' Wyczyść TextBoxy po dodaniu do ListBoxa
       Me.TbIloscScrap.Value = ""
       CbKodWady.Value = ""
-    End If
+
