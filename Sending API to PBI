@@ -1,0 +1,60 @@
+Sub SendDataRangeToPowerBI()
+
+    Dim http As Object
+    Dim url As String
+    Dim data As String
+    Dim ws As Worksheet
+    Dim rng As Range
+    Dim cell As Range
+    Dim rowData As String
+    Dim firstRow As Boolean
+    Dim currentTime As String
+    Dim value As String
+    
+    Set ws = ThisWorkbook.Sheets("Dashboard") ' Arkusz z danymi
+    Set rng = ws.Range("AA2:AB30") ' Zakres danych do wysłania
+
+    ' URL do Power BI Streaming API
+    url = "https://api.powerbi.com/beta/9fc58307-b8c4-416e-bc27-eab7ad86b306/datasets/ce9894d3-639b-48f3-8d65-235245ab6ea1/rows?experience=power-bi&subfolderId=12279&key=lD75irbgQdUbIgSs%2FkqFvRfM46P49GuFPWhCl%2FTVYB93dEGN28dI4DbJYiH3VqtMv7GW9%2BSK2cPZuASvHf0DXQ%3D%3D" ' Wstaw swój URL i API key
+
+    ' Inicjalizacja danych w formacie JSON
+    data = "["
+    firstRow = True
+    currentTime = Format(Now(), "yyyy-MM-ddTHH:MM:SSZ") ' Aktualna data i godzina
+
+    ' Przetwarzanie danych z zakresu, pomijając puste wiersze
+    For Each cell In rng.Rows
+        If cell.Cells(1, 1).value <> "" And cell.Cells(1, 2).value <> "" Then ' Sprawdzenie, czy oba pola są wypełnione
+            If Not firstRow Then
+                data = data & "," ' Dodanie przecinka między wierszami
+            End If
+            firstRow = False
+            
+            ' Pobranie i formatowanie wartości 'Value' z kropką jako separatorem dziesiętnym
+            value = Replace(cell.Cells(1, 2).value, ",", ".")
+            
+            ' Tworzenie JSON dla pojedynczego wiersza z poprawnym formatowaniem
+            rowData = "{""Timestamp"":""" & currentTime & """," & _
+                      """Name"":""" & cell.Cells(1, 1).value & """," & _
+                      """Value"":" & value & "}"
+            
+            data = data & rowData
+        End If
+    Next cell
+
+    data = data & "]" ' Zamknięcie struktury JSON
+
+    ' Utworzenie obiektu HTTP
+    Set http = CreateObject("MSXML2.XMLHTTP")
+    http.Open "POST", url, False
+    http.setRequestHeader "Content-Type", "application/json"
+
+    ' Wysłanie danych do Power BI
+    http.Send (data)
+
+    ' Sprawdzenie odpowiedzi
+    If http.Status = 200 Then
+        'MsgBox "Dane wysłane pomyślnie!"
+    Else
+        MsgBox "Błąd podczas wysyłania danych: " & http.Status & " - " & http.StatusText
+    End If
